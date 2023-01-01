@@ -1,0 +1,48 @@
+Objectives:
+1. Run a dockerized Cluster Hadoop instance
+2. Create a file in the HDFS and view it on the GUI
+
+Set up Cluster Nodes Dockerized Hadoop:
+	1. Start a new terminal
+	2. Clone the repository to your theia environment.
+		--> git clone https://github.com/ibm-developer-skills-network/ooxwv-docker_hadoop.git
+	3. Navigate to the docker-hadoop directory to build it.
+		--> cd ooxwv-docker_hadoop
+	4. Compose the docker application.
+		--> docker-compose up -d
+		*Compose is a tool for defining and running multi-container Docker applications. It uses the YAML file to configure the serives and enables us to create and start all the services from just one configurtation file.*
+	5. Run the namenode as a mounted drive on bash.
+		--> docker exec -it namenode /bin/bash
+	6. You will observe that the prompt changes as root.
+
+Explore the hadoop environment: 
+	As you have learnt in the videos and reading thus far in the course, a Hadoop environment is configured by editing a set of configuration files:
+	1. hadoop-env.sh Serves as a master file to configure YARN, HDFS, MapReduce, and Hadoop-related project settings.
+	2. core-site.xml Defines HDFS and Hadoop core properties
+	3. hdfs-site.xml Governs the location for storing node metadata, fsimage file and log file.
+	4. mapred-site-xml Lists the parameters for MapReduce configuration.
+	5. yarn-site.xml Defines settings relevant to YARN. It contains configurations for the Node Manager, Resource Manager, Containers, and Application Master.
+	For the docker image, these xml files have been configured already. You can see these in the directory /opt/hadoop-3.2.1/etc/hadoop/ by running
+		--> ls /opt/hadoop-3.2.1/etc/hadoop/*.xml
+
+Create a file in the HDFS:
+	1. In the HDFS, create a directory structure named user/root/input.
+		--> hdfs dfs -mkdir -p /user/root/input
+	2. Copy all the hadoop configuration xml files into the input directory.
+		--> hdfs dfs -put $HADOOP_HOME/etc/hadoop/*.xml /user/root/input
+	3. Create a data.txt file in the current directory.
+		--> curl https://raw.githubusercontent.com/ibm-developer-skills-network/ooxwv-docker_hadoop/master/SampleMapReduce.txt --output data.txt 
+	4. Copy the data.txt file into /user/root.
+		--> hdfs dfs -put data.txt /user/root/
+	5. Check if the file has been copied into the HDFS by viewing its content.
+		--> hdfs dfs -cat /user/root/data.txt
+
+View the HDFS: 
+	1. Click on the Skills Network button on the left, it will open the “Skills Network Toolbox”. Then click the Other then Launch Application. From there you should be able to enter the port number as 9870 and launch.
+	2. This will open up the Graphical User Interface (GUI) of the Hadoop node. Click on Utilities -> Broswe the file system to browse the files.
+	3. View the files in the directories that you have just created by clicking on user then root.
+	4. Notice that the block size is 128 MB though the file size is actually much smaller. This is because the default block size used by HDFS is 128 MB.
+	5. You can click on the file to check the file into. It gives you information about the file in terms of number of bytes, block id etc.,
+
+
+
